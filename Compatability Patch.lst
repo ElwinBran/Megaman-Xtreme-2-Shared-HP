@@ -61,7 +61,6 @@ LOC    OBJ              LINE   SOURCE
 0A3F57 EAD5C0           54     ; LD ($C0D5), A
 0A3F5A CDA87F           55     ; CALL $7FA8
 0A3F5D C9               56     ; RET
-
 ------
                         57     ; The first health setting routine, for when Zero switces to X. 
                         58     ; Case when health is still full and at an unknown capacity.
@@ -70,103 +69,98 @@ LOC    OBJ              LINE   SOURCE
 0A3F6C FA21C1           61     ; LD A, ($C121)
 0A3F6F FE80             62     ; CP 0x80
                         63     ; Jump to next case if check is true (currentHealth is a capacity)
-0A3F71 3811             xx     ; JR C, +#17
-0A3F73 B9               xx     ; CP C
-                        xx     ; If the capacity... set health same as capacity
-0A3F74 3825             xx     ; JR C, +#37
-0A3F76 47               xx     ; LD B, A
-                        xx     ; Take health 'excess' in account
-0A3F77 FAD5C0           xx     ; LD A, ($C0D5)
-0A3F7A 80               xx     ; ADD A, B
-                        xx     ; ($C121 + excess) - capacity
-                        xx     ; If this check is... set health same as capacity
-0A3F7B B9               xx     ; CP C
-0A3F7C 301D             xx     ; JR NC, +#29
-0A3F7E C680             xx     ; ADD 0x80
-0A3F80 EA21C1           xx     ; LD ($C121), A
-0A3F83 C9               xx     ; RET
-                        xx     ; Case when health is still full and at an unknown capacity
-0A3F84 47               xx     ; LD B, A
-0A3F85 FAD5C0           xx     ; LD A, ($C0D5)
-0A3F88 80               xx     ; ADD A, B
-0A3F89 47               xx     ; LD B, A (possible HP in B now)
-0A3F8A 3E80             xx     ; LD A, 0x80
-0A3F8C 81               xx     ; ADD A, C 
-0A3F8D 4F               xx     ; LD C, A (unsigned integer HP capacity in C now)
-0A3F8E 78               xx     ; LD A, B
-0A3F8F B9               xx     ; CP C
-                        xx     ; Ensure C is capacity again, in case the jump is made.
-0A3F90 FAD9C0           xx     ; LD A, ($C0D9)
-0A3F93 4F               xx     ; LD C, A
-                        xx     ; If capacity... set health same as capacity
-0A3F94 3806             xx     ; JR C, +#6
-0A3F96 78               xx     ; LD A, B
-0A3F97 EA21C1           xx     ; LD ($C121), A (possibleHP turned into actual)
-0A3F9A C9               xx     ; RET
-                        xx     ; Collects many cases, puts the capacity into health.
-0A3F9B 79               xx     ; LD A, C
-0A3F9C EA21C1           xx     ; LD ($C121), A
-0A3F9F C9               xx     ; RET
+0A3F71 3811             64     ; JR C, +#17
+0A3F73 B9               65     ; CP C
+                        66     ; If X capacity is lower than currentHealth set health same as capacity
+0A3F74 3825             67     ; JR C, +#37
+0A3F76 47               68     ; LD B, A
+                        69     ; Add health 'excess' 
+0A3F77 FAD5C0           70     ; LD A, ($C0D5)
+0A3F7A 80               71     ; ADD A, B
+                        72     ; this is the math that is being checked ($C121 + excess) - capacity
+0A3F7B B9               73     ; CP C
+                        74     ; If the result to zero or negative set health same as capacity
+0A3F7C 301D             75     ; JR NC, +#29
+                        76     ; The result is between Zero and X capacity, so add base level
+0A3F7E C680             77     ; ADD 0x80
+0A3F80 EA21C1           78     ; LD ($C121), A
+0A3F83 C9               79     ; RET
+                        80     ; Case when health is still full and at an unknown capacity
+                        81     ; We want to test the following expression
+                        82     ; (currentHealth + excess) < (capacity X + 0x80)
+0A3F84 47               83     ; LD B, A
+0A3F85 FAD5C0           84     ; LD A, ($C0D5)
+0A3F88 80               85     ; ADD A, B
+0A3F89 47               86     ; LD B, A
+0A3F8A 3E80             87     ; LD A, 0x80
+0A3F8C 81               88     ; ADD A, C 
+0A3F8D 4F               89     ; LD C, A
+0A3F8E 78               90     ; LD A, B
+0A3F8F B9               91     ; CP C
+                        92     ; Ensure C is capacity again, in case the jump is made.
+0A3F90 FAD9C0           93     ; LD A, ($C0D9)
+0A3F93 4F               94     ; LD C, A
+                        95     ; Experssion evaluation
+0A3F94 3806             96     ; JR C, +#6
+0A3F96 78               97     ; LD A, B
+0A3F97 EA21C1           98     ; LD ($C121), A
+0A3F9A C9               99     ; RET
+                        100    ; Collects many cases, puts the capacity into health.
+0A3F9B 79               101    ; LD A, C
+0A3F9C EA21C1           102    ; LD ($C121), A
+0A3F9F C9               103    ; RET
 ------
-                        xx     ; Case when health is still full and at an unknown capacity.
-0A3FA8 FADEC0           xx     ; LD A, ($C0DE)
-0A3FAB 4F               xx     ; LD C, A
-0A3FAC FA21C1           xx     ; LD A, ($C121)
-0A3FAF FE80             xx     ; CP 0x80
-0A3FB1 3811             xx     ; JR C, +#17
-0A3FB3 B9               xx     ; CP C
-                        xx     ; If capacity... set health same as capacity
-0A3FB4 3825             xx     ; JR C, +#37
-0A3FB6 47               xx     ; LD B, A
-                        xx     ; Take health 'excess' in account
-0A3FB7 FADAC0           xx     ; LD A, ($C0DA)
-0A3FBA 80               xx     ; ADD A, B
-                        xx     ; ($C121 + excess) - capacity
-                        xx     ; If this check is...
-0A3FBB B9               xx     ; CP C
-0A3FBC 301D             xx     ; JR NC, +#29
-0A3FBE C680             xx     ; ADD 0x80
-0A3FC0 EA21C1           xx     ; LD ($C121), A
-0A3FC3 C9               xx     ; RET
-                        xx     ; Case when health is still full and at an unknown capacity.
-0A3FC4 47               xx     ; LD B, A
-0A3FC5 FADAC0           xx     ; LD A, ($C0DA)
-0A3FC8 80               xx     ; ADD A, B
-0A3FC9 47               xx     ; LD B, A (possible HP in B now)
-0A3FCA 3E80             xx     ; LD A, 0x80
-0A3FCC 81               xx     ; ADD A, C 
-0A3FCD 4F               xx     ; LD C, A (unsigned integer HP capacity in C now)
-0A3FCE 78               xx     ; LD A, B
-0A3FCF B9               xx     ; CP C
-                        xx     ; Ensure C is capacity again, in case the jump is made.
-0A3FD0 FADEC0           xx     ; LD A, ($C0DE)
-0A3FD3 4F               xx     ; LD C, A
-                        xx     ; If capacity... set health same as capacity
-0A3FD4 3806             xx     ; JR C, +#6
-0A3FD6 78               xx     ; LD A, B
-0A3FD7 EA21C1           xx     ; LD ($C121), A (possibleHP turned into actual)
-0A3FDA C9               xx     ; RET
-                        xx     ; Collects many cases, puts the capacity into health.
-0A3FDB 79               xx     ; LD A, C
-0A3FDC EA21C1           xx     ; LD ($C121), A
-0A3FDF C9               xx     ; RET
+                        104    ; X to Zero, identical to previous, barring addresses
+0A3FA8 FADEC0           105    ; LD A, ($C0DE)
+0A3FAB 4F               106    ; LD C, A
+0A3FAC FA21C1           107    ; LD A, ($C121)
+0A3FAF FE80             108    ; CP 0x80
+0A3FB1 3811             109    ; JR C, +#17
+0A3FB3 B9               110    ; CP C
+0A3FB4 3825             111    ; JR C, +#37
+0A3FB6 47               112    ; LD B, A
+0A3FB7 FADAC0           113    ; LD A, ($C0DA)
+0A3FBA 80               114    ; ADD A, B
+0A3FBB B9               115    ; CP C
+0A3FBC 301D             116    ; JR NC, +#29
+0A3FBE C680             117    ; ADD 0x80
+0A3FC0 EA21C1           118    ; LD ($C121), A
+0A3FC3 C9               119    ; RET
+0A3FC4 47               120    ; LD B, A
+0A3FC5 FADAC0           121    ; LD A, ($C0DA)
+0A3FC8 80               122    ; ADD A, B
+0A3FC9 47               123    ; LD B, A (possible HP in B now)
+0A3FCA 3E80             124    ; LD A, 0x80
+0A3FCC 81               125    ; ADD A, C 
+0A3FCD 4F               126    ; LD C, A (unsigned integer HP capacity in C now)
+0A3FCE 78               127    ; LD A, B
+0A3FCF B9               128    ; CP C
+0A3FD0 FADEC0           129    ; LD A, ($C0DE)
+0A3FD3 4F               130    ; LD C, A
+0A3FD4 3806             131    ; JR C, +#6
+0A3FD6 78               132    ; LD A, B
+0A3FD7 EA21C1           133    ; LD ($C121), A (possibleHP turned into actual)
+0A3FDA C9               134    ; RET
+0A3FDB 79               135    ; LD A, C
+0A3FDC EA21C1           136    ; LD ($C121), A
+0A3FDF C9               137    ; RET
 ------
-                        xx     ; This routine returns the 'excess' value in A
-                        xx     ; The capacity to check against must be supplied in C
-0A3FEB FA21C1           xx     ; LD A, ($C121)
-0A3FEE FE80             xx     ; CP 0x80
-                        xx     ; Checks if currentHealth is still full, which is a value lower than 0x80
-0A3FF0 3003             xx     ; JR NC, +#3
-0A3FF2 91               xx     ; SUB C
-0A3FF3 1807             xx     ; JR +#7 (to zero check!)
-                        xx     ; This part handles if the currentHealth is at a capacity
-0A3FF5 47               xx     ; LD B, A
-0A3FF6 79               xx     ; LD A, C
-0A3FF7 C680             xx     ; ADD 0x80
-0A3FF9 4F               xx     ; LD C, A
-0A3FFA 78               xx     ; LD A, B
-0A3FFB 91               xx     ; SUB C
-                        xx     ; This part zeros the result if below zero.
-0A3FFC 3001             xx     ; JR NC, +#1
-0A3FFE AF               xx     ; XOR A
-0A3FFF C9               xx     ; RET
+                        138    ; This routine returns the 'excess' value in A
+                        139    ; The capacity to check against must be supplied in C
+0A3FEB FA21C1           140    ; LD A, ($C121)
+0A3FEE FE80             141    ; CP 0x80
+                        142    ; Checks if currentHealth is still full, which is a value lower than 0x80
+0A3FF0 3003             143    ; JR NC, +#3
+0A3FF2 91               144    ; SUB C
+0A3FF3 1807             145    ; JR +#7 (to zero check!)
+                        146    ; This part handles if the currentHealth is at a capacity
+0A3FF5 47               147    ; LD B, A
+0A3FF6 79               148    ; LD A, C
+0A3FF7 C680             149    ; ADD 0x80
+0A3FF9 4F               150    ; LD C, A
+0A3FFA 78               151    ; LD A, B
+0A3FFB 91               152    ; SUB C
+                        153    ; This part zeros the result if below zero.
+0A3FFC 3001             154    ; JR NC, +#1
+0A3FFE AF               155    ; XOR A
+0A3FFF C9               156    ; RET
