@@ -1,7 +1,5 @@
 # Mega Man Xtreme 2: Shared HP
-Two patches for Megaman Xtreme 2 that make HP/energy shared between both player characters. 
-
-Work in progress!
+Two patches for Megaman Xtreme 2 that make HP/energy shared between both player characters. A detailed description can be found [on the RomHacking page of this hack](https://www.romhacking.net/hacks/7124/), as well as an alternative download link.
 
 ## Tools
 - [The BGB emulator](http://bgb.bircd.org/#downloads), for disassembly, hex editing, memory viewing, testing and even breakpoints.
